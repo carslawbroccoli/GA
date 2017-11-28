@@ -15,3 +15,4 @@ GA draft done. Update draft by tonight.
 
 Assign the tasks tonight.
 
+Some useful R package resources: http://r-pkgs.had.co.nz/
