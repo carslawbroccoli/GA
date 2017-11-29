@@ -6,6 +6,8 @@ Y <- NULL # vector n  of values provided by the user such that Y is a function o
 n <- dim(X)[1] # number of datapoints
 c <- dim(X)[2] # number of variables
 
+method = lm #method used to fit the problem
+
 collumns_to_use <- rep(1, c) # binary vector c the ith value is one if the ith column of X is to be used in the fitting, 0 otherwise
 
 crossover_points <- 1 # number of crossoverpoints
