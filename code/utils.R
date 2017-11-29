@@ -12,18 +12,19 @@ init <- function(P, c, collumn_to_use){
   return(NULL)
 }
 
-training <- function(candidate, method, X, Y, fitness_function){
+training <- function(candidate, method, X, fitness_function, ...){
   # fits the method on candidates and return the fitness value of the candidate
   #   input:
   #     candidate (binary vector length c): on or off for each columns of X
-  #     method: method for fitting
-  #     X (matrix n x c): data
-  #     Y (vector n): function of some columns of X with noise
+  #     method: method for fitting lm/glm
+  #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
   #     fitness_function: error of the model
   #   output:
   #     fitness_value (float): fitness value of the model
-    
-  return(NULL)
+  ynam <- colnames(X)[ncol(X)]
+  xnam <- colnames(test_data)[which(as.logical(candidate))]
+  fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
+  return(fitness_function(method(fmla, data = X,...)))
 }
 
 select_parents <- function(fitness_values, P){

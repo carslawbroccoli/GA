@@ -1,5 +1,5 @@
 # This file calls the functions from utils to fit a model using genetic algorithm
-source(utils)
+source("utils.R")
 
 
 main <- function(P, c, collumn_to_use, k, eps, method, X, Y, fitness_function){
