@@ -34,17 +34,57 @@ training <- function(candidate, method, X, fitness_function, ...){
   return(fitness_function(method(fmla, data = X,...)))
 }
 
-select_parents <- function(fitness_values, G, half_random = TRUE){
-  # returns Q pairs of parents for breeding
+select_parents <- function(fitness_values, P){
+  # returns P pairs of parents for breeding
   #   input:
   #     fitness_values (vector P): fitness_value of each of the candidate of the current generation
-  #     half_random: select one parent according to fitness rank and another completely random.
-  #     G: generation gap.
+  #     P (int): number of candidates per generation
   #   output:
-  #     parents (matrix Q x 2): each row is a pair of indices of parents
-  #     new_mothers(P x c): Each row is a candidate model for breeding
+  #     parents (matrix P x 2): each row is a pair of indices of parents
   
-  return(NULL)
+  #sort fitness values from least to greatest.
+  fitness.rank <- sort(fitness_values)
+  
+  #sum of the fitness ranks
+  sum.fitness <- (P + 1) * (P / 2)
+  #Probability of Selection for parents based on ranks of fitness values
+  #Create vectors of zeros for 
+  prob.select <- rep(0, P)
+  cumulative.prob <- rep(0, P)
+  
+  for (i in 1:P) {
+    prob.select[i] <- i / sum.fitness
+    if (i == 1) {
+      cumulative.prob[i] <- prob.select[i]
+    }
+    else {
+      cumulative.prob[i] <- cumulative.prob[i - 1] + prob.select[i]
+    }
+  }
+  
+  #create P x 2 matrix for storing parent indices
+  parent.pairs <- matrix(rep(0, P*2), nrow = P, ncol = 2)
+  for (k in 1:2){
+    #Select random starting location
+    #Roulette Wheel Selection
+    roulette.index <- runif(P, min = 0, max = 1)
+    for (i in 1:P) {
+      choose <- 0
+      for (j in 1:P) {
+        if(cumulative.prob[j] < roulette.index[i] 
+           & cumulative.prob[j+1] >= roulette.index[i]) {
+          parent.pairs[i,k] <- j
+          choose <- 1
+          break
+        }
+      }
+      if(choose == 0) {
+        parent.pairs[i,k] <- i
+      }
+    }
+  }
+  
+  return(parent.pairs)
 }
 
 breed <- function(new_mothers, c, parents, mu, crossover_points){
