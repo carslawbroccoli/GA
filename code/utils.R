@@ -1,16 +1,23 @@
 # This file contains all the functions needed to run the genetic algorithm 
 
-init <- function(P, c, collumn_to_use){
+init <- function(df, P){
   # outputs t P random binary vectors of length c
   # input:
+  #   df (data.frame): the datasets with X and Y.
   #   P (int): number of candidates per generations
-  #   c (int): number of chromosomes
-  #   collumn_to_use(binary vector n): what collumns are allowed
   # output:
   #   generation(binary matrix P x c): P candidates
+  c <- ncol(df) - 1
+  return(matrix(c(rep(0,c),sample(c(0,1),(P-2)*c,replace = T),rep(1,c)), nrow = P, byrow = T))
   
-  return(NULL)
+  ## points.
+  
+  # 1. make sure we have all 0 and all 1 in the initial generation.
+  # 2. what if weird number of P is entered? say very very small/large P.
+  #     - n 
+  # return error.
 }
+
 
 training <- function(candidate, method, X, fitness_function, ...){
   # fits the method on candidates and return the fitness value of the candidate
