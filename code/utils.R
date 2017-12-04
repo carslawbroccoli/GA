@@ -34,6 +34,19 @@ training <- function(candidate, method, X, fitness_function, ...){
   return(fitness_function(method(fmla, data = X,...)))
 }
 
+select_parents <- function(fitness_values, G, half_random = TRUE){
+  # returns Q pairs of parents for breeding
+  #   input:
+  #     fitness_values (vector P): fitness_value of each of the candidate of the current generation
+  #     half_random: select one parent according to fitness rank and another completely random.
+  #     G: generation gap.
+  #   output:
+  #     parents (matrix Q x 2): each row is a pair of indices of parents
+  #     new_mothers(P x c): Each row is a candidate model for breeding
+  
+  return(NULL)
+}
+
 breed <- function(new_mothers, c, parents, mu, crossover_points){
   # returns P candidates of the next generation based on the pairs of parents
   #   input:
@@ -45,7 +58,7 @@ breed <- function(new_mothers, c, parents, mu, crossover_points){
   #     generation(binary matrix P x c): P candidates
   
   # crossover
-  crossover = function(new_mothers,c, parents, crossover_points){
+  crossover <- function(new_mothers,c, parents, crossover_points){
     k <- sort(sample(1: c-1 , crossover_points)) # crossover point after k-th index
     print(paste("Splitting occurs after position", k))
     # crossover points split the chromosome into parts, 
