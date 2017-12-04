@@ -94,7 +94,7 @@ breed <- function(P, c, parents, mu, crossover_points){
       offspring[i, ]= (mutationOccur + chromosome) %% 2
     }
   }
-  generation= mutation(crossover(P,c, parents, crossover_points), mu)
+  generation= mutation(crossover(new_mothers,c, parents, crossover_points), mu)
   return(generation)
 }
 

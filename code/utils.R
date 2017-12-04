@@ -34,6 +34,18 @@ training <- function(candidate, method, X, fitness_function, ...){
   return(fitness_function(method(fmla, data = X,...)))
 }
 
+select_parents <- function(fitness_values, P, c){
+  # returns P pairs of parents for breeding
+  #   input:
+  #     fitness_values (vector P): fitness_value of each of the candidate of the current generation
+  #     P (int): number of candidates per generation
+  #   output:
+  #     parents (matrix P x 2): each row is a pair of indices of parents
+  #     new_mothers(P x c): Each row is a candidate model for breeding
+  
+  return(NULL)
+}
+
 breed <- function(new_mothers, c, parents, mu, crossover_points){
   # returns P candidates of the next generation based on the pairs of parents
   #   input:
@@ -92,7 +104,7 @@ breed <- function(new_mothers, c, parents, mu, crossover_points){
       offspring[i, ]= (mutationOccur + chromosome) %% 2
     }
   }
-  generation= mutation(crossover(P,c, parents, crossover_points), mu)
+  generation= mutation(crossover(new_mothers,c, parents, crossover_points), mu)
   return(generation)
 }
 
