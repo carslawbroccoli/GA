@@ -98,3 +98,18 @@ breed <- function(P, c, parents, mu, crossover_points){
   generation= mutation(crossover(P,c, parents, crossover_points), mu)
   return(generation)
 }
+
+
+get_model <- function(candidate, method, X, ...){
+  # returns the parameter of the model once we fit method on candidate
+  #   input:
+  #     candidate (binary vector length c): on or off for each columns of X
+  #     method: method for fitting
+  #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
+  #   output:
+  #     lm/glm object : the model selected after GA.
+  ynam <- colnames(X)[ncol(X)]
+  xnam <- colnames(test_data)[which(as.logical(candidate))]
+  fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
+  return(method(fmla, data = X,...))
+}
