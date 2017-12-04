@@ -34,20 +34,10 @@ training <- function(candidate, method, X, fitness_function, ...){
   return(fitness_function(method(fmla, data = X,...)))
 }
 
-select_parents <- function(fitness_values, P){
-  # returns P pairs of parents for breeding
-  #   input:
-  #     fitness_values (vector P): fitness_value of each of the candidate of the current generation
-  #     P (int): number of candidates per generation
-  #   output:
-  #     parents (matrix P x 2): each row is a pair of indices of parents
-  
-  return(NULL)
-}
-
-breed <- function(P, c, parents, mu, crossover_points){
+breed <- function(new_mothers, c, parents, mu, crossover_points){
   # returns P candidates of the next generation based on the pairs of parents
   #   input:
+  #     new_mothers: Each row is a candidate model for breeding
   #     parents (matrix P x 2): each row is a pair of indices of parents
   #     mu (float): mutation rate
   #     crossover_points (int): number of crossover points
@@ -55,7 +45,7 @@ breed <- function(P, c, parents, mu, crossover_points){
   #     generation(binary matrix P x c): P candidates
   
   # crossover
-  crossover = function(P,c, parents, crossover_points){
+  crossover = function(new_mothers,c, parents, crossover_points){
     k <- sort(sample(1: c-1 , crossover_points)) # crossover point after k-th index
     print(paste("Splitting occurs after position", k))
     # crossover points split the chromosome into parts, 
@@ -64,8 +54,8 @@ breed <- function(P, c, parents, mu, crossover_points){
     offspring= data.frame()
     
     for (i in 1: nrow(parents)){
-      parent1= P[parents[i, 1]]
-      parent2= P[parents[i, 2]] 
+      parent1= new_mothers[parents[i, 1], ]
+      parent2= new_mothers[parents[i, 2], ] 
       temp1= c()
       temp2= c()
       #for odd j, the j-th part in parent 1 will stay in parent 1, same for part 2
