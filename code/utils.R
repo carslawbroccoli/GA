@@ -168,8 +168,6 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
   }
 }
 
-
-
 get_model <- function(candidate, method, X, ...){
   # returns the parameter of the model once we fit method on candidate
   #   input:

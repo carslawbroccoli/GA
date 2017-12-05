@@ -1,6 +1,7 @@
 # Package depends on {stats}, {cvTools} #Find cross-validation, {MuMIn} #Find AICc
 library(cvTools)  #Find cross-validation
 library(MuMIn) #Find AICc
+source("utils.R")
 
 #######################
 ## fake data generation.
@@ -16,7 +17,6 @@ Xdata <- as.data.frame(X)
 Xnames <- paste0("X", 1:c)
 colnames(Xdata) <- Xnames
 # rename the columns of the data frame.
-
 beta <- round(runif(10, min = 2, max = 10))
 beta[sample(1:10,5)] = 0
 # slope
@@ -29,40 +29,40 @@ Y <- rowSums(t(beta*t(X))) + beta_0 + rnorm(n, mean = 0, sd = 0.5)
 test_data <- cbind(Xdata, Y)
 # combine the X and Y values into a data frame.
 
-#######################################################
+################# test init.
+P <- 6
+initial_generation <- init(test_data, P)
 
-# generate a single candidate
-chromo_test_vec <- sample(c(0,1),c, replace = T) # large size but easy to code
 
+############# test training.
 #####################################################
-  
-training <- function(candidate, method, X, fitness_function, ...){
-  # fits the method on candidates and return the fitness value of the candidate
-  #   input:
-  #     candidate (binary vector length c): on or off for each columns of X
-  #     method: method for fitting lm/glm
-  #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
-  #     fitness_function: error of the model
-  #   output:
-  #     fitness_value (float): fitness value of the model
-  ynam <- colnames(X)[ncol(X)]
-  xnam <- colnames(test_data)[which(as.logical(candidate))]
-  fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
-  return(fitness_function(method(fmla, data = X,...)))
-}
 
-######################################################
+test_fitness_value <- training(initial_generation, lm, test_data, AIC)
 
-training(chromo_test_vec, lm, test_data, AIC)
-# linear regression. AIC
+which.min(test_fitness_value)
 
-training(chromo_test_vec, lm, test_data, AICc)
-# linear regression. AICc
-
-
-training(chromo_test_vec, lm, test_data, cvLm, K=8)
+#######################################################
+training(initial_generation, lm, test_data, cvLm, K=8)
 # linear regression. Cross validation
 
-
-training(chromo_test_vec, glm, test_data, AIC, family = Gamma)
+training(initial_generation, glm, test_data, AIC, family = Gamma)
 # glm, family gamma.
+
+################################
+######    test select parents.
+#################################
+
+parent_1 <- select_parents(test_fitness_value, mechanism = "rank", random = TRUE, P=P, c=c)
+# random cannot avoid same parents.
+# tournament problems
+
+
+################################
+
+######    test breed.
+
+#################################
+
+next_gen <- breed(initial_generation,c, parent_1, 0.5, 2, fitness_values = test_fitness_value)
+
+get_model(initial_generation, lm, test_data)
