@@ -68,3 +68,40 @@ sourceEntireFolder <- function(folderName, verbose=FALSE, showWarnings=TRUE) {
   }
   return(invisible(NULL))
 }
+
+create_dataset <- function(){
+  #######################
+  ## fake data generation.
+  #######################
+  c <- 10
+  # number of variables c = 10
+  n <- 30
+  # total number of observations
+  X <- matrix(rep(round(runif(10, min = 1, max = 10)),n) + rnorm(c*n, mean = 0, sd = 0.2), nrow = n, byrow = T)
+  # matrix of variables
+  Xdata <- as.data.frame(X)
+  # matrix to a data frame.
+  Xnames <- paste0("X", 1:c)
+  colnames(Xdata) <- Xnames
+  # rename the columns of the data frame.
+  
+  beta <- round(runif(10, min = 2, max = 10))
+  beta[sample(1:10,5)] = 0
+  # slope
+  beta_0 <- 7
+  # intercept
+  
+  Y <- rowSums(t(beta*t(X))) + beta_0 + rnorm(n, mean = 0, sd = 0.5)
+  # Y values.
+  
+  test_data <- cbind(Xdata, Y)
+  # combine the X and Y values into a data frame.
+  
+  #######################################################
+  
+  # generate a single candidate
+  chromo_test_vec <- sample(c(0,1),c, replace = T)
+  
+  obj <- list(candidate = chromo_test_vec,
+              X = test_data)
+}

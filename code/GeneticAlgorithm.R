@@ -6,12 +6,13 @@ library(methods)
 source('./code/utils.R')
 
 
-### Class generation contains all the information to breed and create further generation, contains candidate
+### Class generation contains all the information to breed and create further generation, shuld contain a list of candidate and
+# all the information to create the next gen
 
 
 
 
-### Class GeneticAlgorithm contains generations
+### Class GeneticAlgorithm should have a field generation and the condition for the algo to stop
 
 
 
@@ -21,8 +22,8 @@ Candidate <- function(X = NA, method = NA,
                       fitness_function = NA,
                       candidate = NA){
   # runs tests on the input
-  if (class(X)!="matrix"){
-    stop('X is not of type matrix')
+  if (class(X)!="data.frame"){
+    stop('X is not of type data.frame')
   }
   if (class(method)!="function"){
     stop('method is not of type function')
@@ -48,5 +49,5 @@ Candidate <- function(X = NA, method = NA,
 }
 
 training.Candidate <- function(object){
-    return(with(object, training(candidate, method, X, fitness_function, ...)))
+    return(with(object, training(candidate, method, X, fitness_function)))
 }
