@@ -87,18 +87,19 @@ select_parents <- function(fitness_values, P){
   return(parent.pairs)
 }
 
-breed <- function(new_mothers, c, parents, mu, crossover_points){
+breed <- function(fitness_values,new_mothers, c, parents, mu, crossover_points, Gap=1/4){
   # returns P candidates of the next generation based on the pairs of parents
   #   input:
   #     new_mothers: Each row is a candidate model for breeding
   #     parents (matrix P x 2): each row is a pair of indices of parents
   #     mu (float): mutation rate
   #     crossover_points (int): number of crossover points
+  #     Gap(float): proportion of the generation to be replaced by offspring, 1/p< Gap <=1    
   #   output:
   #     generation(binary matrix P x c): P candidates
   
   # crossover
-  crossover <- function(new_mothers,c, parents, crossover_points){
+  crossover = function(new_mothers,c, parents, crossover_points){
     k <- sort(sample(1: c-1 , crossover_points)) # crossover point after k-th index
     print(paste("Splitting occurs after position", k))
     # crossover points split the chromosome into parts, 
@@ -144,11 +145,28 @@ breed <- function(new_mothers, c, parents, mu, crossover_points){
       }        
       offspring[i, ]= (mutationOccur + chromosome) %% 2
     }
+    return(offspring)
   }
-  generation= mutation(crossover(P,c, parents, crossover_points), mu)
-  return(generation)
+  
+  # Generation Gap
+  offspring= mutation(crossover(new_mothers,c, parents, crossover_points), mu)
+  if (Gap == 1){
+    return(offspring) #return
+  }
+  else{
+    num_replace= floor(P * Gap)
+    # assume each time P/2 mother and P/2 father produce P babies
+    # num_replace of parents will be replaced by random generated babies
+    
+    # index of the replaced parents
+    replaced_index= sort(fitness_values, index.return= TRUE)$ix[1:num_replace]
+    selected_babies= sample(nrow(offspring), size= num_replace, replace = FALSE)
+    for (i in 1:length(replaced_index)){
+      new_mothers[replaced_index[i]] = offspring[selected_babies[i]]
+    }
+    return(new_mothers) #retrun
+  }
 }
-
 
 get_model <- function(candidate, method, X, ...){
   # returns the parameter of the model once we fit method on candidate
