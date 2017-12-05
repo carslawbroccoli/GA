@@ -134,56 +134,5 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
     return(offspring)
   }
   
-  
-  # mutation
-  mutation <- function(offspring, mu){
-    for (i in 1: nrow(offspring)){
-      chromosome <-  offspring[i, ]
-      #generate associated uniform random variable for each locus
-      mutationLocus <-  runif(length(chromosome),0,1)          
-      #mutation occurs if r.v. < mutationProbability
-      #find the location of mutation
-      mutationOccur <- (mutationLocus < mu)       
-      #return the final result
-      offspring[i, ] <- (mutationOccur + chromosome) %% 2
-    }
-    return(offspring)
-  }
-  
-  # Generation Gap
-  offspring <- mutation(crossover(candidate,c, parent.pairs, crossover_points), mu)
-  if (Gap == 1){
-    return(offspring) #return
-  }
-  else{
-    num_replace= floor(P * Gap)
-    # assume each time P/2 mother and P/2 father produce P babies
-    # num_replace of parents will be replaced by random generated babies
-    
-    # index of the replaced parents
-    replaced_index= sort(fitness_values, index.return= TRUE)$ix[1:num_replace]
-    selected_babies= sample(nrow(offspring), size= num_replace, replace = FALSE)
-    candidate[replaced_index,] <- offspring[selected_babies,]
-    return(candidate) #return
-  }
-}
-
-get_model <- function(candidate, method, X, ...){
-  # returns the parameter of the model once we fit method on candidate
-  #   input:
-  #     candidate (binary vector length c): on or off for each columns of X
-  #     method: method for fitting
-  #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
-  #   output:
-  #     lm/glm object : the model selected after GA.
-  best <- candidate[which.min(test_fitness_value),]
-  ynam <- colnames(X)[ncol(X)]
-  if (sum(best)==0){
-    fmla <- as.formula(paste(ynam, " ~ 1"))
-    return(method(fmla, data = X,...))
-  }else{
-  xnam <- colnames(test_data)[which(as.logical(best))]
-  fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
-  return(method(fmla, data = X,...))
-  }
+ 
 }
