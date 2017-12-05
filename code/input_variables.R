@@ -12,6 +12,9 @@ collumns_to_use <- rep(1, c) # binary vector c the ith value is one if the ith c
 
 crossover_points <- 1 # number of crossoverpoints
 
+G <- 1  #G: Generation Gap, proportion of generation to be replaced by generated offsprings.
+#Chapter 3 page 81. section 3.4.2.2.
+
 P <- 2*c # number of candidates per generation
 
 fitness_function = AIC # Either AIC or BIC or other possible fitness function
