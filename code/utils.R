@@ -27,14 +27,14 @@ training <- function(candidate, method, X, fitness_function, ...){
   #   output:
   #     fitness_value (float): fitness value of the model
   individual_training <- function(x){
-    ynam <- colnames(X)[ncol(X)]
-    if (sum(x)==0){
-      fmla <- as.formula(paste(ynam, " ~ 1"))
-      return(fitness_function(method(fmla, data = X,...)))
-    }else{
-      xnam <- colnames(X)[which(as.logical(x))]
-      fmla <- as.formula(paste(ynam, " ~ ", paste(xnam, collapse= "+")))
-      return(fitness_function(method(fmla, data = X,...)))
+  ynam <- colnames(X)[ncol(X)]
+  if (sum(x)==0){
+    fmla <- as.formula(paste(ynam, " ~ 1"))
+    return(fitness_function(method(fmla, data = X,...)))
+  }else{
+    xnam <- colnames(X)[which(as.logical(x))]
+    fmla <- as.formula(paste(ynam, " ~ ", paste(xnam, collapse= "+")))
+    return(fitness_function(method(fmla, data = X,...)))
     }
   }
   return(apply(candidate, 1, individual_training))
@@ -103,7 +103,7 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
   #     generation(binary matrix P x c): P candidates
   # crossover
   crossover <- function(candidate, c, parent.pairs, crossover_points){
-    
+
     pos <- sort(sample(1:(c-1), crossover_points, replace = F))
     k <- unname(split(1:c, cumsum(seq_along(1:c) %in% pos))) # crossover point after k-th index
     # notes: input 1 <= crossover_points <= c-1. else return error. warning("crossover_point not proper")
@@ -184,8 +184,8 @@ get_model <- function(candidate, method, X, ...){
     fmla <- as.formula(paste(ynam, " ~ 1"))
     return(method(fmla, data = X,...))
   }else{
-    xnam <- colnames(test_data)[which(as.logical(best))]
-    fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
-    return(method(fmla, data = X,...))
+  xnam <- colnames(test_data)[which(as.logical(best))]
+  fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
+  return(method(fmla, data = X,...))
   }
 }
