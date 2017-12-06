@@ -53,10 +53,16 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
   #   output:
   #     parents (matrix P x 2): each row is a pair of indices of parents
   #     candidate(P x c): Each row is a candidate model for breeding
+  #   Notes: 
+  #     random must be defined when the function is used otherwise I get an error
   
-  
+  #more 'globally' defined i, allows completion of non-random selection
+  i <- 0
+  #rankings of parent fitness values
   fitness_rank <- rank(fitness_values)
+  #probabilities of parents based on ranked fitness values
   fitness_phi <- fitness_rank/sum(fitness_rank)
+  #initialiaze empty parent.pairs matrix (P/2 X 2)
   parent.pairs <- matrix(rep(0,ceiling(P/2)*2), ncol = 2)
   if (mechanism == "rank"){
     if (random == TRUE){
@@ -87,7 +93,7 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
     parent.pairs <- tournament_sample[!duplicated(t(combn(tournament_sample,2)))]
     parent.pairs <- parent.pairs[!rowSums(t(apply(parent.pairs, 1, duplicated))),][1:P,]
   }
-  #returns the indices of parents from the original list
+  #returns the indices of parents from the original list of fitness values
   return(parent.pairs)
   
   # point: 
