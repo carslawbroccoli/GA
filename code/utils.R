@@ -54,6 +54,7 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
   #     parents (matrix P x 2): each row is a pair of indices of parents
   #     candidate(P x c): Each row is a candidate model for breeding
   
+  
   fitness_rank <- rank(fitness_values)
   fitness_phi <- fitness_rank/sum(fitness_rank)
   parent.pairs <- matrix(rep(0,ceiling(P/2)*2), ncol = 2)
@@ -82,9 +83,11 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
     for (i in 1:P){
       tournament_sample[i] <- which.max(fitness_rank[sample.int(P, size = ceiling(P/4), replace = T)])
     }
+    #build output matrix of selected parents for breeding
     parent.pairs <- tournament_sample[!duplicated(t(combn(tournament_sample,2)))]
     parent.pairs <- parent.pairs[!rowSums(t(apply(parent.pairs, 1, duplicated))),][1:P,]
   }
+  #returns the indices of parents from the original list
   return(parent.pairs)
   
   # point: 
