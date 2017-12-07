@@ -1,0 +1,15 @@
+Package: GA
+Type: Package
+Title: Genetic Algorithm for Variable Selection in Regression Problems
+Version: 0.1.0
+Author: Ming Qiu, Junyuan Gao, Jehl Titouan, Jeffrey Kwarsick
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description:  A genetic algorithm for variable selection in regression problems, 
+    including both linear regression and GLM.  Used for handling binary functions
+    to fit data and produce the best model based on input data.  This package was 
+    assembled as part of the final project of STAT243 at the University of California,
+    Berkeley, Fall 2017.
+License: Standard Licensing for Open Source Material Applies
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1

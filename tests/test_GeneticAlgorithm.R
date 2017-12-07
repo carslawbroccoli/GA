@@ -1,7 +1,7 @@
 #################################################################################
 # Test the file GeneticAlgorithm.R
 #################################################################################
-source('./../code/GeneticAlgorithm.R')
+source('./R/GeneticAlgorithm.R')
 
 test_that("candidates datatype", {
   expect_error(Candidate(X=1), 'X is not of type data.frame')
