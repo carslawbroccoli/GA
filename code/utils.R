@@ -143,6 +143,37 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
     return(offspring)
   }
   
+  # mutation
+  mutation <- function(offspring, mu){
+    for (i in 1: nrow(offspring)){
+      chromosome <-  offspring[i, ]
+      #generate associated uniform random variable for each locus
+      mutationLocus <-  runif(length(chromosome),0,1)          
+      #mutation occurs if r.v. < mutationProbability
+      #find the location of mutation
+      mutationOccur <- (mutationLocus < mu)       
+      #return the final result
+      offspring[i, ] <- (mutationOccur + chromosome) %% 2
+    }
+    return(offspring)
+  }
+  
+  # Generation Gap
+  offspring <- mutation(crossover(candidate,c, parent.pairs, crossover_points), mu)
+  if (Gap == 1){
+    return(offspring) #return
+  }
+  else{
+    num_replace= floor(P * Gap)
+    # assume each time P/2 mother and P/2 father produce P babies
+    # num_replace of parents will be replaced by random generated babies
+    
+    # index of the replaced parents
+    replaced_index= sort(fitness_values, index.return= TRUE)$ix[1:num_replace]
+    selected_babies= sample(nrow(offspring), size= num_replace, replace = FALSE)
+    candidate[replaced_index,] <- offspring[selected_babies,]
+    return(candidate) #return
+  }
  
 }
 
