@@ -1,7 +1,18 @@
+source("./R/utils.R")
 #' @title main.R
 #' @description This file calls the functions from utils to fit a model using genetic algorithm
 #' Takes all of the components of the from utils and runs the full algorithm on the input data.
-source("./R/utils.R")
+#' @param P (int) number of candidates per generation
+#' @param c (int) number of chromosomes per candidate solution
+#' @param collumn_to_use Not sure what this is used for
+#' @param k (int) total number of generations
+#' @param eps (float) epsilon convergence condition, will exit algorithm if this condition is
+#' satisfied before total number of generations is reached
+#' @param X raw data to be fit
+#' @param Y output values of function
+#' @param fitness_function type of function used to compute the fitness of each candidate.
+#' Either AIC or BIC is used in this package.
+#' @return model Final model output from running GA
 
 
 main <- function(P, c, collumn_to_use, k, eps, method, X, Y, fitness_function){

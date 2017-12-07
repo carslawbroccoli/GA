@@ -1,6 +1,9 @@
 #######################################################################
-#' This method creates a set of classes needed for the genetic algorithm
+# This method creates a set of classes needed for the genetic algorithm
 #######################################################################
+
+
+
 
 library(methods)
 source('./R/utils.R')
