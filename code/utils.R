@@ -145,3 +145,23 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
   
  
 }
+
+get_model <- function(candidate, method, X, ...){
+    # returns the parameter of the model once we fit method on candidate
+      #   input:
+      #     candidate (binary vector length c): on or off for each columns of X
+      #     method: method for fitting
+      #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
+      #   output:
+      #     lm/glm object : the model selected after GA.
+      best <- candidate[which.min(test_fitness_value),]
+      ynam <- colnames(X)[ncol(X)]
+      if (sum(best)==0){
+          fmla <- as.formula(paste(ynam, " ~ 1"))
+          return(method(fmla, data = X,...))
+        }else{
+            xnam <- colnames(test_data)[which(as.logical(best))]
+            fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
+            return(method(fmla, data = X,...))
+          }
+    }
