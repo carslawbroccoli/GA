@@ -27,14 +27,14 @@ training <- function(candidate, method, X, fitness_function, ...){
   #   output:
   #     fitness_value (float): fitness value of the model
   individual_training <- function(x){
-  ynam <- colnames(X)[ncol(X)]
-  if (sum(x)==0){
-    fmla <- as.formula(paste(ynam, " ~ 1"))
-    return(fitness_function(method(fmla, data = X,...)))
-  }else{
-    xnam <- colnames(X)[which(as.logical(x))]
-    fmla <- as.formula(paste(ynam, " ~ ", paste(xnam, collapse= "+")))
-    return(fitness_function(method(fmla, data = X,...)))
+    ynam <- colnames(X)[ncol(X)]
+    if (sum(x)==0){
+      fmla <- as.formula(paste(ynam, " ~ 1"))
+      return(fitness_function(method(fmla, data = X,...)))
+    }else{
+      xnam <- colnames(X)[which(as.logical(x))]
+      fmla <- as.formula(paste(ynam, " ~ ", paste(xnam, collapse= "+")))
+      return(fitness_function(method(fmla, data = X,...)))
     }
   }
   return(apply(candidate, 1, individual_training))
@@ -53,16 +53,9 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
   #   output:
   #     parents (matrix P x 2): each row is a pair of indices of parents
   #     candidate(P x c): Each row is a candidate model for breeding
-  #   Notes: 
-  #     random must be defined when the function is used otherwise I get an error
   
-  #more 'globally' defined i, allows completion of non-random selection
-  i <- 0
-  #rankings of parent fitness values
   fitness_rank <- rank(fitness_values)
-  #probabilities of parents based on ranked fitness values
   fitness_phi <- fitness_rank/sum(fitness_rank)
-  #initialiaze empty parent.pairs matrix (P/2 X 2)
   parent.pairs <- matrix(rep(0,ceiling(P/2)*2), ncol = 2)
   if (mechanism == "rank"){
     if (random == TRUE){
@@ -89,11 +82,9 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
     for (i in 1:P){
       tournament_sample[i] <- which.max(fitness_rank[sample.int(P, size = ceiling(P/4), replace = T)])
     }
-    #build output matrix of selected parents for breeding
     parent.pairs <- tournament_sample[!duplicated(t(combn(tournament_sample,2)))]
     parent.pairs <- parent.pairs[!rowSums(t(apply(parent.pairs, 1, duplicated))),][1:P,]
   }
-  #returns the indices of parents from the original list of fitness values
   return(parent.pairs)
   
   # point: 
@@ -112,7 +103,7 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
   #     generation(binary matrix P x c): P candidates
   # crossover
   crossover <- function(candidate, c, parent.pairs, crossover_points){
-
+    
     pos <- sort(sample(1:(c-1), crossover_points, replace = F))
     k <- unname(split(1:c, cumsum(seq_along(1:c) %in% pos))) # crossover point after k-th index
     # notes: input 1 <= crossover_points <= c-1. else return error. warning("crossover_point not proper")
@@ -142,6 +133,7 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
     }
     return(offspring)
   }
+  
   
   # mutation
   mutation <- function(offspring, mu){
@@ -174,25 +166,24 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
     candidate[replaced_index,] <- offspring[selected_babies,]
     return(candidate) #return
   }
- 
 }
 
 get_model <- function(candidate, method, X, ...){
-    # returns the parameter of the model once we fit method on candidate
-      #   input:
-      #     candidate (binary vector length c): on or off for each columns of X
-      #     method: method for fitting
-      #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
-      #   output:
-      #     lm/glm object : the model selected after GA.
-      best <- candidate[which.min(test_fitness_value),]
-      ynam <- colnames(X)[ncol(X)]
-      if (sum(best)==0){
-          fmla <- as.formula(paste(ynam, " ~ 1"))
-          return(method(fmla, data = X,...))
-        }else{
-            xnam <- colnames(test_data)[which(as.logical(best))]
-            fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
-            return(method(fmla, data = X,...))
-          }
-    }
+  # returns the parameter of the model once we fit method on candidate
+  #   input:
+  #     candidate (binary vector length c): on or off for each columns of X
+  #     method: method for fitting
+  #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
+  #   output:
+  #     lm/glm object : the model selected after GA.
+  best <- candidate[which.min(test_fitness_value),]
+  ynam <- colnames(X)[ncol(X)]
+  if (sum(best)==0){
+    fmla <- as.formula(paste(ynam, " ~ 1"))
+    return(method(fmla, data = X,...))
+  }else{
+    xnam <- colnames(test_data)[which(as.logical(best))]
+    fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
+    return(method(fmla, data = X,...))
+  }
+}
