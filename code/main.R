@@ -2,23 +2,33 @@
 source("./code/utils.R")
 
 
-main <- function(P, c, collumn_to_use, k, eps, method, X, Y, fitness_function){
-  generation <- init(P, c, collumn_to_use)
-  cpt <- 1
-  delta = Inf
-  best_fitness_val = Inf
-  while(cpt <= k & delta > eps){
-    fitness_values <- apply(generation, 1, function(candidate){utils.training(candidate, method, X, Y, fitness_function)})
-    parents <- select_parents (fitness_values, P)
-    if(cpt<k){
-      generation <- breed(parents, mu, crossover_points)
-    }
-    cpt <- cpt+1
-    delta = abs(best_fitness_val - min(fitness_values))
-    best_fitness_val <- min(fitness_values)
+
+main <- function(df, P, max_iter,method, fitness_function, mu, crossover_points, mechanism , random = TRUE, Gap = 1/4){
+  # df: data frame
+  # P: number of individuals per generation
+  # method: lm/glm
+  # fitness_function: AIC/BIC/ow
+  # mechanism: "tournament","rank"
+  # mu: mutation_rate
+  # crossover_points: number of crossover points
+  # max_iter: maximum iteration
+  c <- ncol(df) - 1
+  n <- nrow(df)
+  Xdata <- df[,1:c]
+  Y <- df[,c]
+  # note add warning on P. the range of P. P at least greater than 2.
+  candidate <- init(df = df, P = P, c = c)
+  iter <- 0
+  while (iter < max_iter) {
+    candidate_fitness_value <- training(candidate = candidate, method = method, X = df, fitness_function= AIC)
+    candidate_parents <- select_parents(fitness_values = candidate_fitness_value, 
+                                        mechanism = mechanism, random = random, P = P, c = c)
+    candidate <- breed(candidate = candidate, c = c, P = P, parent.pairs = candidate_parents, 
+                       mu = mu, crossover_points = crossover_points, 
+                       fitness_values = candidate_fitness_value, Gap = Gap)
+    iter <- iter + 1
   }
-  
-  idx <- which.min(fitness_values)
-  model <- utils.get_model(generation[idx], method, X, Y)
-  return(model)
+  candidate_fitness_value <- training(candidate = candidate, method = method, X = df, fitness_function= AIC)
+  best_model <- get_model(candidate = candidate, fitness_values = candidate_fitness_value, method = method, X = df)
+  return(best_model)
 }

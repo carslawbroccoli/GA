@@ -1,11 +1,11 @@
-init <- function(df, P){
+init <- function(df, P, c){
   # outputs t P random binary vectors of length c
   # input:
   #   df (data.frame): the datasets with X and Y.
   #   P (int): number of candidates per generations
   # output:
   #   generation(binary matrix P x c): P candidates
-  c <- ncol(df) - 1
+  # c <- ncol(df) - 1
   return(as.data.frame(matrix(c(rep(0,c),sample(c(0,1),(P-2)*c,replace = T),rep(1,c)), nrow = P, byrow = T)))
   
   ## Notes.
@@ -40,7 +40,7 @@ training <- function(candidate, method, X, fitness_function, ...){
   return(apply(candidate, 1, individual_training))
 }
 
-select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),random = TRUE, P, c){
+select_parents <- function(fitness_values, mechanism, random = random, P, c){
   # returns P pairs of parents for breeding
   #   input:
   #     fitness_values (vector P): fitness_value of each of the candidate of the current generation
@@ -54,36 +54,29 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
   #     parents (matrix P x 2): each row is a pair of indices of parents
   #     candidate(P x c): Each row is a candidate model for breeding
   
-  fitness_rank <- rank(fitness_values)
+  fitness_rank <- rank(-fitness_values)
   fitness_phi <- fitness_rank/sum(fitness_rank)
   parent.pairs <- matrix(rep(0,ceiling(P/2)*2), ncol = 2)
   if (mechanism == "rank"){
+    i <- 0
     if (random == TRUE){
-      i <- 0
       while(i <= ceiling(P/2)){
-        parent.pairs.candidate <- c(sample.int(P, size = 1,prob = fitness_phi),
-                                    sample.int(P, size = 1))
-        if (sum(apply(parent.pairs, 1, identical, parent.pairs.candidate)) == 0){
-          parent.pairs[i,] <- parent.pairs.candidate
-          i <- i + 1
-        }
+        parent.pairs[i,] <- c(sample.int(P, size = 1,prob = fitness_phi),
+                              sample.int(P, size = 1))
+        i <- i + 1
       }
     }else{
       while(i <= ceiling(P/2)){
-        parent.pairs.candidate <- sample.int(P,size = 2,prob = fitness_phi)
-        if (sum(apply(parent.pairs, 1, identical, parent.pairs.candidate)) == 0){
-          parent.pairs[i,] <- parent.pairs.candidate
-          i <- i + 1
-        }
+        parent.pairs[i,] <- sample.int(P,size = 2,prob = fitness_phi)
+        i <- i + 1
       }
     }
   }else if (mechanism == "tournament"){
-    tournament_sample <- rep(0,P)
-    for (i in 1:P){
-      tournament_sample[i] <- which.max(fitness_rank[sample.int(P, size = ceiling(P/4), replace = T)])
+    tournament_sample <- NULL
+    for (i in 1:(2*ceiling(P/2))){
+      tournament_sample[i] <- which.max(fitness_rank[sample(1:P, size = max(5,ceiling(P/4)), replace = T)])
     }
-    parent.pairs <- tournament_sample[!duplicated(t(combn(tournament_sample,2)))]
-    parent.pairs <- parent.pairs[!rowSums(t(apply(parent.pairs, 1, duplicated))),][1:P,]
+    parent.pairs <- matrix(tournament_sample, byrow = T, ncol = 2)
   }
   return(parent.pairs)
   
@@ -92,7 +85,7 @@ select_parents <- function(fitness_values, mechanism=c("rank", "tournament"),ran
   # 2. avoid offsprings share the exact same gene.
 }
 
-breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_values, Gap=1/4){
+breed <- function(candidate, c, P, parent.pairs, mu, crossover_points, fitness_values, Gap){
   # returns P candidates of the next generation based on the pairs of parents
   #   input:
   #     candidate: Each row is a candidate model for breeding
@@ -102,35 +95,27 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
   #   output:
   #     generation(binary matrix P x c): P candidates
   # crossover
+  # add if crossoverpoint = 0, skip crossover part.
   crossover <- function(candidate, c, parent.pairs, crossover_points){
-    
-    pos <- sort(sample(1:(c-1), crossover_points, replace = F))
-    k <- unname(split(1:c, cumsum(seq_along(1:c) %in% pos))) # crossover point after k-th index
+    offspring <- as.data.frame(matrix(rep(0, nrow(parent.pairs)*2*c), ncol = c))
+    for (j in 1:nrow(parent.pairs)) {
+      temp1 <-  candidate[parent.pairs[j,1],]
+      temp2 <-  candidate[parent.pairs[j,2],]
+      pos <- c(0, sort(sample(1:(c-1), crossover_points, replace = F)), c)
+      pos_interval <- unname(split(1:c, rep(1:length(diff(pos)), diff(pos))))
+      change_idx <- (1:((crossover_points+1)/2))*2
+      for (i in 1:length(change_idx)){
+        temp <- temp1[pos_interval[[change_idx[i]]]]
+        temp1[pos_interval[[change_idx[i]]]] <- temp2[pos_interval[[change_idx[i]]]]
+        temp2[pos_interval[[change_idx[i]]]] <- temp
+      }
+      offspring[(2*j-1),] <- temp1
+      offspring[(2*j),] <- temp2
+    }
     # notes: input 1 <= crossover_points <= c-1. else return error. warning("crossover_point not proper")
     #print(paste("Splitting occurs after position", k))
     # crossover points split the chromosome into parts, 
     # which we can express i-th part as chromosome[k_start[i], k[i]]
-    offspring= data.frame()
-    
-    for (i in 1: nrow(parent.pairs)){
-      parent1= candidate[parent.pairs[i, 1], ]
-      parent2= candidate[parent.pairs[i, 2], ] 
-      temp1= c()
-      temp2= c()
-      #for odd j, the j-th part in parent 1 will stay in parent 1, same for part 2
-      for (j in 1:(crossover_points + 1)){
-        if (j %% 2 ==1){
-          temp1= c(temp1, parent1[k[[j]]])
-          temp2= c(temp2, parent2[k[[j]]])
-        }
-        #for odd j, the j-th part in parent 1 will change to parent 2(same for part 2)
-        else if (j %% 2 ==0){
-          temp1= c(temp1, parent2[k[[j]]])
-          temp2= c(temp2, parent1[k[[j]]])
-        }
-      }
-      offspring = rbind(offspring, temp1, temp2)
-    }
     return(offspring)
   }
   
@@ -154,21 +139,20 @@ breed <- function(candidate, c, parent.pairs, mu, crossover_points, fitness_valu
   offspring <- mutation(crossover(candidate,c, parent.pairs, crossover_points), mu)
   if (Gap == 1){
     return(offspring) #return
-  }
-  else{
+  }else{
     num_replace= floor(P * Gap)
     # assume each time P/2 mother and P/2 father produce P babies
     # num_replace of parents will be replaced by random generated babies
     
     # index of the replaced parents
-    replaced_index= sort(fitness_values, index.return= TRUE)$ix[1:num_replace]
+    replaced_index= sort(fitness_values, decreasing = T,index.return= TRUE)$ix[1:num_replace]
     selected_babies= sample(nrow(offspring), size= num_replace, replace = FALSE)
     candidate[replaced_index,] <- offspring[selected_babies,]
     return(candidate) #return
   }
 }
 
-get_model <- function(candidate, method, X, ...){
+get_model <- function(candidate, fitness_values, method, X, ...){
   # returns the parameter of the model once we fit method on candidate
   #   input:
   #     candidate (binary vector length c): on or off for each columns of X
@@ -176,13 +160,13 @@ get_model <- function(candidate, method, X, ...){
   #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
   #   output:
   #     lm/glm object : the model selected after GA.
-  best <- candidate[which.min(test_fitness_value),]
+  best <- candidate[which.min(fitness_values),]
   ynam <- colnames(X)[ncol(X)]
   if (sum(best)==0){
     fmla <- as.formula(paste(ynam, " ~ 1"))
     return(method(fmla, data = X,...))
   }else{
-    xnam <- colnames(test_data)[which(as.logical(best))]
+    xnam <- colnames(X)[which(as.logical(best))]
     fmla <- as.formula(paste( ynam, " ~ ", paste(xnam, collapse= "+")))
     return(method(fmla, data = X,...))
   }
