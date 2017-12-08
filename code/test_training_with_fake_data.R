@@ -23,6 +23,7 @@ fake_data <- function(c, n, beta_0, beta, sigma){
 test_data <- fake_data(10, 50, 1, 
                        sample(c(round(runif(10/2, min = 2, max = 10)), rep(0,5)), replace = F), 1)
 
-main(test_data, 15, 100, lm, AIC, 0.1, 3, mechanism = "rank", random = FALSE, Gap = 1/4)
+main(test_data, 15, 100, "lm", "BIC", 0.1, 3, mechanism = "rank", 
+     random = FALSE, Gap = 1/4, plot.return = T)
 
 
