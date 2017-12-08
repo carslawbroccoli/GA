@@ -17,7 +17,7 @@ init <- function(df, P, c){
 }
 
 
-training <- function(candidate, method, X, fitness_function, ...){
+training <- function(candidate, method_text, X, fitness_function_text, ...){
   # fits the method on candidates and return the fitness value of the candidate
   #   input:
   #     candidate (binary vector length c): on or off for each columns of X
@@ -26,6 +26,8 @@ training <- function(candidate, method, X, fitness_function, ...){
   #     fitness_function: error of the model
   #   output:
   #     fitness_value (float): fitness value of the model
+  method <- match.fun(method_text)
+  fitness_function <- match.fun(fitness_function_text)
   individual_training <- function(x){
     ynam <- colnames(X)[ncol(X)]
     if (sum(x)==0){
@@ -152,7 +154,7 @@ breed <- function(candidate, c, P, parent.pairs, mu, crossover_points, fitness_v
   }
 }
 
-get_model <- function(candidate, fitness_values, method, X, ...){
+get_model <- function(candidate, fitness_values, method_text, X, ...){
   # returns the parameter of the model once we fit method on candidate
   #   input:
   #     candidate (binary vector length c): on or off for each columns of X
@@ -160,6 +162,8 @@ get_model <- function(candidate, fitness_values, method, X, ...){
   #     X (matrix n x (c+1)): data (n x c) and the last column is the value of y.
   #   output:
   #     lm/glm object : the model selected after GA.
+  method <- match.fun(method_text)
+  
   best <- candidate[which.min(fitness_values),]
   ynam <- colnames(X)[ncol(X)]
   if (sum(best)==0){
