@@ -20,7 +20,6 @@ select <- function(df, P, max_iter, method_text, fitness_function_text, mu,
   # note add warning on P. the range of P. P at least greater than 2.
   candidate <- init(df = df, P = P, c = c)
   iter <- 0
-  bn <- eps + 1
   if (plot.return == FALSE){
     min_fitness <- 0 
     while ((iter < max_iter) & (sum(min_fitness == min(min_fitness)) < 100)) {

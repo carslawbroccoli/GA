@@ -1,7 +1,8 @@
 #################################################################################
 # Test the file GeneticAlgorithm.R
 #################################################################################
-source('./R/GeneticAlgorithm.R')
+source("~/repos/GA/code/utils.R")
+source("~/repos/GA/code/select.R")
 
 ####################################
 ############# unit test ############
@@ -21,6 +22,7 @@ fake_data <- function(c, n, beta_0, beta, sigma){
 test_data <- fake_data(10, 50, 1, 
                        sample(c(round(runif(10/2, min = 2, max = 10)), rep(0,5)), replace = F), 1)
 
+
 ####### unit test for init() #############
 context("Test Init() function")
 
@@ -39,6 +41,8 @@ test_that("Output is a data.frame", {
   init3 <- init(test_data, 15, 10)
   expect_equal(class(init3),"data.frame")
 })
+
+
 ############ unit test for training() ################
 context("Test training() function")
 
@@ -71,19 +75,21 @@ test_that("Algorithm works for both AIC/BIC",{
   expect_equal(class(train1), "numeric")
   expect_equal(class(train2), "numeric")
 })
+
+
 ############ unit test for select_parents() ###########
 context("Test select_parents() function")
 test_that("Input errors", {
   init6 <- init(test_data, 15, 10)
   train6 <- training(init6, lm, test_data,AIC)
-  expect_error(select_parents( , mechanism="rank", random=T, 15, 10),
-               "fitness_values is missing with no default value")
+  expect_error(select_parents( mechanism="rank", random=T, 15, 10),
+               'argument "c" is missing, with no default')
   expect_error(select_parents(train6, mechanism= 12, random=T, 15, 10),
                "mechanism is not 'rank' or 'tournament' ")
   expect_error(select_parents(train6, mechanism="rank", random="lol", 15, 10),
                "random is not a logical")
   expect_error(select_parents(train6, mechanism="rank", random=T, "", 10),
-               "P is not a numeric")
+               "non-numeric argument to binary operator")
   expect_error(select_parents(train6, mechanism="rank", random=T, 15, "axiba"),
                "c is not a numeric")
 })
@@ -118,10 +124,10 @@ test_that("Input Errors", {
   init7 <- init(test_data, 15, 10)
   train7 <- training(init6, lm, test_data,AIC)
   parent7 <- select_parents(train6, mechanism="rank", random=T, 15, 10)
-  expect_error(breed(,P=15, c=10, parent7, mu=0.5,
-                     crossover_points=3, train7, Gap=1/2),"'candidate' is missing with no default value" )
-  expect_error(breed(init7,P=15, c=10, , mu=0.5,
-                     crossover_points=3, train7, Gap=1/2), "'parent.pairs' is missing with no default value")
+  expect_error(breed(P=15, c=10, parent7, mu=0.5,
+                     crossover_points=3, train7, Gap=1/2),"invalid 'times' argument")
+  expect_error(breed(init7,P=15, c=10 , mu=0.5,
+                     crossover_points=3, train7, Gap=1/2), "invalid 'times' argument")
   expect_error(breed(init7,P=15, c=10, parent7, mu=0.5,
                      crossover_points=3, train7, Gap=TRUE), "input should be data.frame or numeric")
 })
@@ -174,4 +180,64 @@ test_that("output is of the same class as the training method", {
                      train7, Gap=1/2)
   new_candidate8 <- get_model(next_gen8, train8, lm, test_data)
   expect_identical(class(new_candidate8), "lm")
+})
+
+######### integration test for select() function ###########
+context("Integration test for select() function")
+test_that("Input errors", {
+  expect_error(select(P=5, max_iter=100, method_text="lm", fitness_function_text="AIC", mu=0.1, 
+                      crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "df" is missing, with no default')
+  expect_error(select(test_data, max_iter=100, method_text="lm", fitness_function_text="AIC", mu=0.1, 
+                      crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "P" is missing, with no default')
+  expect_error(select(test_data, P=5,  method_text="lm", fitness_function_text="AIC", mu=0.1, 
+                      crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "max_iter" is missing, with no default')
+  expect_error(select(test_data, P=5,  max_iter=100,  fitness_function_text="AIC", mu=0.1, 
+                      crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "method_text" is missing, with no default')
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", mu=0.1, 
+                      crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "fitness_function_text" is missing, with no default')
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC", 
+                      crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "mu" is missing, with no default')
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC", 
+                      mu=0.1, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "crossover_points" is missing, with no default')
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC", 
+                      mu=0.1, crossover_points=3, random = TRUE, Gap = 1/4, plot.return = FALSE),
+               'argument "mechanism" is missing, with no default')
+})
+
+test_that("Check Output object is a list", {
+  result1 <- select(test_data, 5, 300, "lm", "AIC", 0.1, 3, mechanism = "rank",
+                    random = FALSE, Gap = 1/4, plot.return = F)
+  expect_true(class(result1), "list")
+})
+
+test_that("Check that in some case, maximum number of iterations is useful",{
+  result1 <- select(test_data, 15, 100, "lm", "AIC", 0.1, 3, mechanism = "rank",
+                    random = FALSE, Gap = 1/4, plot.return = F)
+  expect_true(result1$count ==100)
+})
+
+test_that("With different mechanism, out algorithm converge to same result with different number of iterations",{
+  result11 <- select(test_data, 5, 300, "lm", "BIC", 0.1, 3, mechanism = "rank",
+                     random = FALSE, Gap = 1/4, plot.return = F)
+  result12 <- select(test_data, 5, 300, "lm", "AICc", 0.1, 3, mechanism = "rank",
+                     random = FALSE, Gap = 1/4, plot.return = F)
+  
+  expect_false(result12$count == result11$count)
+  print(result11$model)
+  print(result12$model)
+})
+
+test_that("when mechanism is 'rank', set 'random=FALSE' may make the convergence faster ", {
+  result11 <-  select(test_data, 15, 300, "lm", "AIC", 0.1, 3, mechanism = "rank",
+                      random = FALSE, Gap = 1/4, plot.return = F)
+  result12 <-  select(test_data, 15, 300, "lm", "AIC", 0.1, 3, mechanism = "rank",
+                      random = TRUE, Gap = 1/4, plot.return = F)
+  expect_less_than(result11$count, result12$count)
 })
