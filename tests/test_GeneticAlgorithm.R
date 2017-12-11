@@ -1,8 +1,8 @@
 #################################################################################
 # Test the file GeneticAlgorithm.R
 #################################################################################
-source("~/repos/GA/code/utils.R")
-source("~/repos/GA/code/select.R")
+source("~/R/utils.R")
+source("~/R/select.R")
 
 ####################################
 ############# unit test ############
@@ -19,7 +19,7 @@ fake_data <- function(c, n, beta_0, beta, sigma){
   return(cbind(Xdata, Y))
 }
 
-test_data <- fake_data(10, 50, 1, 
+test_data <- fake_data(10, 50, 1,
                        sample(c(round(runif(10/2, min = 2, max = 10)), rep(0,5)), replace = F), 1)
 
 
@@ -185,28 +185,28 @@ test_that("output is of the same class as the training method", {
 ######### integration test for select() function ###########
 context("Integration test for select() function")
 test_that("Input errors", {
-  expect_error(select(P=5, max_iter=100, method_text="lm", fitness_function_text="AIC", mu=0.1, 
+  expect_error(select(P=5, max_iter=100, method_text="lm", fitness_function_text="AIC", mu=0.1,
                       crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "df" is missing, with no default')
-  expect_error(select(test_data, max_iter=100, method_text="lm", fitness_function_text="AIC", mu=0.1, 
+  expect_error(select(test_data, max_iter=100, method_text="lm", fitness_function_text="AIC", mu=0.1,
                       crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "P" is missing, with no default')
-  expect_error(select(test_data, P=5,  method_text="lm", fitness_function_text="AIC", mu=0.1, 
+  expect_error(select(test_data, P=5,  method_text="lm", fitness_function_text="AIC", mu=0.1,
                       crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "max_iter" is missing, with no default')
-  expect_error(select(test_data, P=5,  max_iter=100,  fitness_function_text="AIC", mu=0.1, 
+  expect_error(select(test_data, P=5,  max_iter=100,  fitness_function_text="AIC", mu=0.1,
                       crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "method_text" is missing, with no default')
-  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", mu=0.1, 
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", mu=0.1,
                       crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "fitness_function_text" is missing, with no default')
-  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC", 
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC",
                       crossover_points=3, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "mu" is missing, with no default')
-  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC", 
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC",
                       mu=0.1, mechanism="rank" , random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "crossover_points" is missing, with no default')
-  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC", 
+  expect_error(select(test_data, P=5,  max_iter=100,  method_text="lm", fitness_function_text="AIC",
                       mu=0.1, crossover_points=3, random = TRUE, Gap = 1/4, plot.return = FALSE),
                'argument "mechanism" is missing, with no default')
 })
@@ -228,7 +228,7 @@ test_that("With different mechanism, out algorithm converge to same result with 
                      random = FALSE, Gap = 1/4, plot.return = F)
   result12 <- select(test_data, 5, 300, "lm", "AICc", 0.1, 3, mechanism = "rank",
                      random = FALSE, Gap = 1/4, plot.return = F)
-  
+
   expect_false(result12$count == result11$count)
   print(result11$model)
   print(result12$model)

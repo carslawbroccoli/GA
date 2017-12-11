@@ -2,7 +2,7 @@
 library(cvTools)  #Find cross-validation
 library(MuMIn) #Find AICc
 
-source("~/repos/GA/code/utils.R")
+source("~/R/utils.R")
 
 #######################
 ## fake data generation.
@@ -20,10 +20,10 @@ fake_data <- function(c, n, beta_0, beta, sigma){
   return(cbind(Xdata, Y))
 }
 
-test_data <- fake_data(10, 50, 1, 
+test_data <- fake_data(10, 50, 1,
                        sample(c(round(runif(10/2, min = 2, max = 10)), rep(0,5)), replace = F), 1)
 
-main(test_data, 15, 100, "lm", "cvLm", 0.1, 3, mechanism = "rank", 
+main(test_data, 15, 100, "lm", "cvLm", 0.1, 3, mechanism = "rank",
      random = FALSE, Gap = 1/4, plot.return = T, K = 5)
 
 
