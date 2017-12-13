@@ -74,7 +74,7 @@ select <- function(df, P, max_iter, method_text, fitness_function_text, mu,
     while ((iter < max_iter) & (sum(min_fitness == min(min_fitness)) < 100)) {
       candidate_fitness_value <- training(candidate = candidate, method_text = method_text,
                                           X = df, fitness_function_text= fitness_function_text)
-      plot_fitness_value <- rbind(plot_fitness_value, cbind(rep((iter+1), P), -1*candidate_fitness_value))
+      plot_fitness_value <- rbind(plot_fitness_value, cbind(rep((iter+1), P), -candidate_fitness_value))
       min_fitness[(iter+1)] <- min(candidate_fitness_value)
       bn <- mean(min_fitness^2) - mean(min_fitness)^2
       candidate_parents <- select_parents(fitness_values = candidate_fitness_value,
