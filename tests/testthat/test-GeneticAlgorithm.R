@@ -1,8 +1,7 @@
 #################################################################################
 # Test the file GeneticAlgorithm.R
 #################################################################################
-source("~/GA/R/utils.R")
-source("~/GA/R/select.R")
+
 library(testthat)
 ##### test data #####################
 fake_data <- function(c, n, beta_0, beta, sigma){
@@ -17,12 +16,12 @@ fake_data <- function(c, n, beta_0, beta, sigma){
   return(cbind(Xdata, Y))
 }
 
-test_data <- fake_data(10, 50, 1, 
+test_data <- fake_data(10, 50, 1,
                        sample(c(round(runif(10/2, min = 2, max = 10)), rep(0,5)), replace = F), 1)
 
 
 
-source("~/GA/R/utils.R")
+
 ####### unit test for init() #############
 context("Test Init() function")
 
@@ -42,7 +41,7 @@ context("Test training() function")
 test_that("Input errors", {
   init4 <- init(test_data, 15, 10)
   FitnessFunction = "fakeFunction"
-  expect_error(training(init4,fitness_function_text=poisson,data= test_data,AIC), 
+  expect_error(training(init4,fitness_function_text=poisson,data= test_data,AIC),
                'argument "X" is missing, with no default')
   expect_error(training(init4,lm,matrix(1:55,5,11),AIC),
                "'data' must be a data.frame, not a matrix or an array")
@@ -177,7 +176,7 @@ test_that("Input errors", {
                       crossover_points=3, mechanism = "rank",random = FALSE, Gap = 1/4, plot.return = FALSE),
                'argument "df" is missing, with no default')
   expect_error(select(as.matrix(mtcars), dependent_variable="mpg",P=15, max_iter=100, method_text="lm", fitness_function_text= "AIC", mu=0.1,
-                      crossover_points=3, mechanism = "rank",random = FALSE, Gap = 1/4, plot.return = FALSE), 
+                      crossover_points=3, mechanism = "rank",random = FALSE, Gap = 1/4, plot.return = FALSE),
                "The input is not a data frame.")
   expect_error(select(mtcars,P=15, max_iter=100, method_text="lm", fitness_function_text= "AIC", mu=0.1,
                       crossover_points=3, mechanism = "rank",random = FALSE, Gap = 1/4, plot.return = FALSE),
@@ -185,13 +184,13 @@ test_that("Input errors", {
 })
 
 test_that("Check Output object is a list", {
-  result1 <- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank", 
+  result1 <- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank",
                     random = FALSE, Gap = 1/4, plot.return = F)
   expect_equal(class(result1), "list")
 })
 
 test_that("Check that in some case, maximum number of iterations is useful",{
-  result1 <- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank", 
+  result1 <- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank",
                     random = FALSE, Gap = 1/4, plot.return = F)
   expect_true(result1$count ==200)
 })
@@ -199,26 +198,26 @@ test_that("Check that in some case, maximum number of iterations is useful",{
 
 test_that("With different mechanism, out algorithm converge to different result",{
   library(MuMIn)
-  result11 <- select(mtcars, "mpg", 15, 200, "lm", "BIC", 0.2, 3, mechanism = "rank", 
+  result11 <- select(mtcars, "mpg", 15, 200, "lm", "BIC", 0.2, 3, mechanism = "rank",
                      random = FALSE, Gap = 1/4, plot.return = F)
-  result12 <- select(mtcars, "mpg", 15, 200, "lm", "AICc", 0.2, 3, mechanism = "rank", 
+  result12 <- select(mtcars, "mpg", 15, 200, "lm", "AICc", 0.2, 3, mechanism = "rank",
                      random = FALSE, Gap = 1/4, plot.return = F)
-  
+
   expect_false(result12$fitness_value == result11$fitness_value)
   print(result11$model)
   print(result12$model)
 })
 
 test_that("when mechanism is 'rank', set 'random=FALSE' may converge to the same result", {
-  result11 <-  select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank", 
+  result11 <-  select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank",
                       random = FALSE, Gap = 1/4, plot.return = F)
-  result12 <-  select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank", 
+  result12 <-  select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank",
                       random = TRUE, Gap = 1/4, plot.return = F)
   expect_equal(result11$fitness_value, result12$fitness_value)
 })
 
 test_that("select() can generate a plot when setting plot.return=TRUE", {
-  result1<- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank", 
+  result1<- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank",
                    random = FALSE, Gap = 1/4, plot.return = T)
   expect_true(identical(class(result1$plot), c("gg", "ggplot")))
 })
