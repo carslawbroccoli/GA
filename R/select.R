@@ -1,5 +1,4 @@
 # This file calls the functions from utils to fit a model using genetic algorithm
-source("./R/utils.R")
 
 select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, method_text = "lm", fitness_function_text = "AIC", mu = 0.1,
                    crossover_points = c-1, mechanism = "rank", random = TRUE, Gap = 1/4, plot.return = FALSE){
@@ -55,7 +54,7 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #' test_data <- fake_data(10, 50, 1,
   #' sample(c(round(runif(10/2, min = 2, max = 10)), rep(0,5)), replace = F), 1)
   #'
-  #' select(test_data, 'Y', 15, 100, "lm", "AIC", 0.1, 3, mechanism = "rank",
+  #' select(test_data, 15, 100, "lm", "AIC", 0.1, 3, mechanism = "rank",
   #' random = FALSE, Gap = 1/4, plot.return = T)
   #'
   c <- ncol(df) - 1
