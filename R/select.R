@@ -4,11 +4,11 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
                    crossover_points = c-1, mechanism = "rank", random = TRUE, Gap = 1/4, plot.return = FALSE){
   #' @import ggplot2
   #' @name select
-  #' @title{select()}
+  #' @title Genetic Algorithm for Model Selection
   #' @export
   #' @description This is main call function to run package GA.  This package is comprised of
-  #' a main execution file (\emph{select.R} and a R file comtaining all functions
-  #' that are necessary for execution (\emph{utils.R}).  The user can enter in a dataset and provide
+  #' a main execution file (\code{select.R}) and a R file comtaining all functions
+  #' that are necessary for execution (\code{utils.R}).  The user can enter in a dataset and provide
   #' variables (listed below) to execute the genetic algorithm.
   #' @usage select(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu,
   #' crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
@@ -37,6 +37,13 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #' @param random (logical) Random replacement on or off for parent selection
   #' @param Gap Generation gap that determines how parents (generation t) are replaced by offspring of the (t+1) generation
   #' @param plot.return (logical) Boolean for returning plot at end of the algorithm
+  #' @return \code{select} returns a list with elements:
+  #'
+  #' \itemize{
+  #'  \item{\code{count}}: {number of iterations}
+  #'  \item{\code{model}}: {a \code{lm} or \code{glm} object}
+  #'  \item{\code{fitness_value}}: {the value of fitness function of the returned model}
+  #'  }
   #' @examples
   #' select(mtcars, "mpg")
   #'
