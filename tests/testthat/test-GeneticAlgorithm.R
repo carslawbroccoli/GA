@@ -215,10 +215,3 @@ test_that("when mechanism is 'rank', set 'random=FALSE' may converge to the same
                       random = TRUE, Gap = 1/4, plot.return = F)
   expect_equal(result11$fitness_value, result12$fitness_value)
 })
-
-test_that("select() can generate a plot when setting plot.return=TRUE", {
-  library(ggplot2)
-  result1<- select(mtcars, "mpg", 15, 200, "lm", "AIC", 0.2, 3, mechanism = "rank",
-                   random = FALSE, Gap = 1/4, plot.return = T)
-  expect_true(identical(class(result1$plot), c("gg", "ggplot")))
-})
