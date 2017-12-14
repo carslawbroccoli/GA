@@ -30,6 +30,7 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #'  \item{get_model()}: {Returns the best fit model of the dataset}
   #' }
   #' @param df (data frame) Dataset to fit
+  #' @param dependent_variable dependent variable from dataset to fit  with GA
   #' @param P (int) The number of individuals per generation.
   #' @param max_iter (int) The maximum number of iterations allowed when running GA
   #' @param method_text lm() or glm() methods for fitting the data
