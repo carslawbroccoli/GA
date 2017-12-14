@@ -10,6 +10,8 @@ crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
 \arguments{
 \item{df}{(data frame) Dataset to fit}
 
+\item{dependent_variable}{dependent variable from dataset to fit  with GA}
+
 \item{P}{(int) The number of individuals per generation.}
 
 \item{max_iter}{(int) The maximum number of iterations allowed when running GA}
