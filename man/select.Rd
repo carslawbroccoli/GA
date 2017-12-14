@@ -10,29 +10,27 @@ crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
 \arguments{
 \item{df}{(data frame) Dataset to fit}
 
-\item{dependent_variable}{dependent variable from dataset to fit  with GA}
+\item{dependent_variable}{(character) Column name of the dependent variable}
 
-\item{P}{(int) The number of individuals per generation.}
+\item{P}{(numeric) The number of individuals per generation.}
 
-\item{max_iter}{(int) The maximum number of iterations allowed when running GA}
+\item{max_iter}{(numeric) The maximum number of iterations allowed when running GA}
 
-\item{method_text}{lm() or glm() methods for fitting the data}
+\item{method_text}{(character) "lm" or "glm". methods for fitting the data}
 
-\item{fitness_function_text}{AIC, BIC, ow}
+\item{fitness_function_text}{(character) name of the fitness function. AIC, BIC, or user defined function.}
+
+\item{mu}{(numeric) Mutation rate of the allele within a candidate chromosome.}
+
+\item{crossover_points}{(numeric) The number of crossover points during breeding step}
+
+\item{mechanism}{(character) The mechanism to select parents. Selection mechanisms are "rank" or "tournament".}
 
 \item{random}{(logical) Random replacement on or off for parent selection}
 
-\item{Gap}{Generation gap that determines how parents (generation t) are replaced by offspring
-of the (t+1) generation}
+\item{Gap}{Generation gap that determines how parents (generation t) are replaced by offspring of the (t+1) generation}
 
 \item{plot.return}{(logical) Boolean for returning plot at end of the algorithm}
-
-\item{mu:}{Mutation rate of the for each allele within the a given candidate chromosome.}
-
-\item{crossover_points:}{(int) The number of crossover points during breeding step}
-
-\item{mechanism:}{The mechanism to selection parents by.  Selection mechanisms
-are "ranked" or "tournament."}
 }
 \description{
 This is main call function to run package GA.  This package is comprised of
@@ -56,6 +54,8 @@ execution of the genetic algorithm.
 }
 }
 \examples{
+select(mtcars, "mpg")
+
 fake_data <- function(c, n, beta_0, beta, sigma){
 # c: number of variables c = 10
 # n: total number of observations
