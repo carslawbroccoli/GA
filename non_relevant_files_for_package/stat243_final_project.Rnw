@@ -55,7 +55,7 @@ efficiently.
 
 \subsection{Ming Qiu's Contribution}
 Ming Qiu worked on the select.R function that handles the iterations for the genetic algorithm as
-well as the training function.  She also worked to implement plotting features for our algorithm with the \emph{get\_model()} function.  Lastly, she worked to debug the package as a whole to run more efficiently. She also worked on the \emph{get_model()} function.
+well as the training function.  She also worked to implement plotting features for our algorithm with the \emph{get\_model()} function.  Lastly, she worked to debug the package as a whole to run more efficiently. She also worked on the \emph{get\_model()} function.
 
 \subsection{Junyuan Gao's Contribution}
 Junyuan Gao worked on the formal testing for the completed algorithm, checking to ensure thatproper inputs for each function in our algorithm were able to handle improper inputs. He also worked on writing the breeding function (crossover and mutation included within the breeding function).
@@ -70,38 +70,16 @@ Titouan designed the skeleton. He coded the skeleton of the ‘utils.R‘ file s
 \section{Testing}
 We conducted testing on all of the inputs for all functions in our package and confirmed that if an invalid input was entered, that the code would properly handle the error and not execute. In addition to testing all of the outputs, all the functions were also tested independently. Below is an itemized list of how each function within our algorithm was tested.
 
-\begin{itemize}
-  \item training
-  \begin{itemize}
-    \item The algorithm works with both lm() and glm().
-    \item That the algorithm works with both AIC and BIC for fitness functions.
-    \item That the output vector of the training function is non-zero and correctly outputs all
-          fitness values for candidate chromosomes.
-  \end{itemize}
-  \item select_parents
-  \begin{itemize}
-    \item The function produces correct length of parent pairs for breeding
-    \item That each call of select parents() produces a different set of parent pairs for breeding.
-    \item If either selection mechanism is called, the same number of parent pairs (based on the
-          number of input parents) is the same.
-  \end{itemize}
-  \item breed
-  \begin{itemize}
-    \item That the output is a data frame of the correct (P x c) dimension
-    \item Everytime repeated crossover and mutation will produce different new generations
-    \item That the generation gap can only be between (0,1]
-  \end{itemize}
-  \item get\_model -- output is the same class as the training method
-  \item select -- integration test of the function, checking all inputs
-\end{itemize}
+
 
 \section{Example}
-Below is an example for fitting using an R dataset \textbf{mtcars}, with the dependent variable being \textbf{mpg}.
+Below is an example for fitting using an R dataset "mtcars", with the dependent variable being "mpg."
 
 <<>>=
+
 library('GA')
 library('ggplot2')
 
 select(mtcars, "mpg", plot.return = TRUE)
-@
+
 \end{document}

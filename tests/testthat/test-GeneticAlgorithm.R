@@ -22,7 +22,7 @@ test_data <- fake_data(10, 50, 1,
 
 
 
-source("~/repos/GA/code/utils.R")
+source("~/GA/R/utils.R")
 ####### unit test for init() #############
 context("Test Init() function")
 
