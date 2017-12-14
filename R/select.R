@@ -14,7 +14,7 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #' a main execution file (\emph{select.R} and a R file comtaining all functions
   #' that are necessary for execution (\emph{utils.R}).  The user can enter in a dataset and provide
   #' variables (listed below) to execute the genetic algorithm.
-  #' @usage select(df, P, max_iter, method_text, fitness_function_text, mu,
+  #' @usage select(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu,
   #' crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
   #' @details Contained in the list below are the invdividual functions that are called during the
   #' execution of the genetic algorithm.

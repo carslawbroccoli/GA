@@ -4,7 +4,7 @@
 \alias{select}
 \title{{select()}}
 \usage{
-select(df, P, max_iter, method_text, fitness_function_text, mu,
+select(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu,
 crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
 }
 \arguments{
