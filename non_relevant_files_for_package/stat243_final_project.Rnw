@@ -20,28 +20,28 @@ from the data provided by the user and the number of individual per generation. 
 hand the loop can still be broken into subblocks. We decided to implement 5 methods:
 
 \begin{itemize}
-  
+
   \item a ‘training‘ method that takes as input a candidate with his information, data, a model to fit
   and fitness function. This method fits the model on the data with respect to the candidate
   genetic information. It then outputs the fitness value of this candidate. This method dealing
   with only one candidate as a time, it enables us to later parallelize the update of a generation
   by running this method on different cores.
-  
+
   \item a ‘select parent‘ method that takes as input the vector of fitness values of the candidate of
   the current generation as well as all the way to select the parents - with/without replacement,
   tournament, etc. This method selects pairs of parents with respect to the fitness values of the
   candidate. It returns a list of pairs of parents that will breed to create the next generation
-  
+
   \item a ‘breeding‘ method that takes as input the pairs of parents, and the input needed to chose the
   breeding technique (number of crossover points etc.). This methods create the candidates of
   the next generation. This method does not implement the mutation. Note that this method
   could have been split in a smaller block on which we could have parallelize a loop. The
   output of this method is the binary dataframe representing the genetic information of the
   next generation
-  
+
   \item a ‘mutation‘ method that takes as input the new generation and the rate of mutation to
   modify the genetic information randomly and output the new generation post mutations
-  
+
   \item a ‘get model‘ method that returns for a given candidate the model that has been fitted on it
 
 \end{itemize}
@@ -54,15 +54,13 @@ efficiently.
 \section{Collaborator Contributions}
 
 \subsection{Ming Qiu's Contribution}
-Ming Qiu worked on the select.R function that handles the iterations for the genetic algorithm as
-well as the training function.  She also worked to implement plotting features for our algorithm with the \emph{get\_model()} function.  Lastly, she worked to debug the package as a whole to run more efficiently. She also worked on the \emph{get\_model()} function.
+Ming Qiu worked on the select.R function that handles the iterations for the genetic algorithm as well as the init, training, get\_model functions. She also worked to implement plotting features for our algorithm and improving the code from other parts. Lastly, she worked to debug the package as a whole to run more efficiently and help prepare the help manual.
 
 \subsection{Junyuan Gao's Contribution}
 Junyuan Gao worked on the formal testing for the completed algorithm, checking to ensure thatproper inputs for each function in our algorithm were able to handle improper inputs. He also worked on writing the breeding function (crossover and mutation included within the breeding function).
 
 \subsection{Jeffrey Kwarsick's Contribution}
-Jeffrey Kwarsick worked on the \emph{select\_parents()} function. He was also responsible for building
-the package and making sure it carried the proper structure.  He ensured that it was able to be installed through github and tested.  Lastly, he prepared all of the documentation within the package itself.
+Jeffrey Kwarsick worked on the \emph{select\_parents()} function. He was also responsible for building the package and making sure it carried the proper structure.  He ensured that it was able to be installed through github and tested.  Lastly, he prepared all of the documentation within the package itself.
 
 \subsection{Titouan Jehl's Contribution}
 Titouan designed the skeleton. He coded the skeleton of the ‘utils.R‘ file so the whole group could be on the same page about the data type of the inputs and outputs. To do so I adopted the Google style of comment for each method.
@@ -75,11 +73,8 @@ We conducted testing on all of the inputs for all functions in our package and c
 \section{Example}
 Below is an example for fitting using an R dataset "mtcars", with the dependent variable being "mpg."
 
-<<>>=
-
+<<fig.height=3,fig.width=4>>=
 library('GA')
-library('ggplot2')
-
-select(mtcars, "mpg", plot.return = TRUE)
-
+mtcars_model <- select(mtcars, "mpg", plot.return = TRUE)
+@
 \end{document}
