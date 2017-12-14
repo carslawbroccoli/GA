@@ -4,11 +4,13 @@
 \alias{select}
 \title{{select()}}
 \usage{
-select(df, P, max_iter, method_text, fitness_function_text, mu,
+select(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu,
 crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
 }
 \arguments{
 \item{df}{(data frame) Dataset to fit}
+
+\item{dependent_variable}{dependent variable from dataset to fit  with GA}
 
 \item{P}{(int) The number of individuals per generation.}
 

@@ -11,7 +11,7 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #' a main execution file (\emph{select.R} and a R file comtaining all functions
   #' that are necessary for execution (\emph{utils.R}).  The user can enter in a dataset and provide
   #' variables (listed below) to execute the genetic algorithm.
-  #' @usage select(df, P, max_iter, method_text, fitness_function_text, mu,
+  #' @usage select(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu,
   #' crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
   #' @details Contained in the list below are the invdividual functions that are called during the
   #' execution of the genetic algorithm.
@@ -27,6 +27,7 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #'  \item{get_model()}: {Returns the best fit model of the dataset}
   #' }
   #' @param df (data frame) Dataset to fit
+<<<<<<< HEAD
   #' @param dependent_variable (character) Column name of the dependent variable
   #' @param P (numeric) The number of individuals per generation.
   #' @param max_iter (numeric) The maximum number of iterations allowed when running GA
@@ -35,6 +36,17 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #' @param mu (numeric) Mutation rate of the allele within a candidate chromosome.
   #' @param crossover_points (numeric) The number of crossover points during breeding step
   #' @param mechanism (character) The mechanism to select parents. Selection mechanisms are "rank" or "tournament".
+=======
+  #' @param dependent_variable dependent variable from dataset to fit  with GA
+  #' @param P (int) The number of individuals per generation.
+  #' @param max_iter (int) The maximum number of iterations allowed when running GA
+  #' @param method_text lm() or glm() methods for fitting the data
+  #' @param fitness_function_text AIC, BIC, ow
+  #' @param mu: Mutation rate of the for each allele within the a given candidate chromosome.
+  #' @param crossover_points: (int) The number of crossover points during breeding step
+  #' @param mechanism: The mechanism to selection parents by.  Selection mechanisms
+  #' are "ranked" or "tournament."
+>>>>>>> ac79678360cc366655bd876c9fd375b32b560120
   #' @param random (logical) Random replacement on or off for parent selection
   #' @param Gap Generation gap that determines how parents (generation t) are replaced by offspring of the (t+1) generation
   #' @param plot.return (logical) Boolean for returning plot at end of the algorithm

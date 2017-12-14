@@ -6,4 +6,9 @@ export(init)
 export(select)
 export(select_parents)
 export(training)
+<<<<<<< HEAD
 import(ggplot2)
+=======
+importFrom(stats,as.formula)
+importFrom(stats,runif)
+>>>>>>> ac79678360cc366655bd876c9fd375b32b560120

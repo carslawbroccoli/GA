@@ -3,9 +3,10 @@
 
 source("~/repos/GA/code/utils.R")
 
-select <- function(df, P, max_iter, method_text, fitness_function_text, mu, 
+select <- function(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu, 
                    crossover_points, mechanism , random = TRUE, Gap = 1/4, plot.return = FALSE){
   # df: data frame
+  # dependent_variable: name of y
   # P: number of individuals per generation
   # method: lm/glm
   # fitness_function: AIC/BIC/ow
@@ -15,8 +16,9 @@ select <- function(df, P, max_iter, method_text, fitness_function_text, mu,
   # max_iter: maximum iteration
   c <- ncol(df) - 1
   n <- nrow(df)
-  Xdata <- df[,1:c]
-  Y <- df[,c]
+  yidx <- which(colnames(df) == dependent_variable)
+  Xdata <- df[,-yidx]
+  Y <- df[,yidx]
   # note add warning on P. the range of P. P at least greater than 2.
   candidate <- init(df = df, P = P, c = c)
   iter <- 0
