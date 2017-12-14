@@ -53,7 +53,7 @@ test_that("output is a vector of fitness values", {
   init5 <- init(test_data, 15, 10)
   train1 <- training(init5, lm, test_data,AIC)
   expect_equal(class(train1), "numeric")
-  expect_more_than(length(train1), 0)
+  expect_gt(length(train1), 1)
 })
 
 test_that("Algorithm works for both lm/glm",{
