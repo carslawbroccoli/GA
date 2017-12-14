@@ -2,7 +2,7 @@
 % Please edit documentation in R/select.R
 \name{select}
 \alias{select}
-\title{{select()}}
+\title{Genetic Algorithm for Model Selection}
 \usage{
 select(df, dependent_variable, P, max_iter, method_text, fitness_function_text, mu,
 crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
@@ -32,10 +32,19 @@ crossover_points, mechanism, random = TRUE, Gap = 1/4, plot.return = FALSE)
 
 \item{plot.return}{(logical) Boolean for returning plot at end of the algorithm}
 }
+\value{
+\code{select} returns a list with elements:
+
+\itemize{
+ \item{\code{count}}: {number of iterations}
+ \item{\code{model}}: {a \code{lm} or \code{glm} object}
+ \item{\code{fitness_value}}: {the value of fitness function of the returned model}
+ }
+}
 \description{
 This is main call function to run package GA.  This package is comprised of
-a main execution file (\emph{select.R} and a R file comtaining all functions
-that are necessary for execution (\emph{utils.R}).  The user can enter in a dataset and provide
+a main execution file (\code{select.R}) and a R file comtaining all functions
+that are necessary for execution (\code{utils.R}).  The user can enter in a dataset and provide
 variables (listed below) to execute the genetic algorithm.
 }
 \details{
