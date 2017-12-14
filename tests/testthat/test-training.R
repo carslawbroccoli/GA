@@ -2,7 +2,6 @@
 library(cvTools)  #Find cross-validation
 library(MuMIn) #Find AICc
 
-source("~/GA/R/utils.R")
 
 #######################
 ## fake data generation.
