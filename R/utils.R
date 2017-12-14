@@ -117,10 +117,6 @@ select_parents <- function(fitness_values, mechanism, random = random, P, c){
     parent.pairs <- matrix(tournament_sample, byrow = T, ncol = 2)
   }
   return(parent.pairs)
-
-  # point:
-  # 1. after selection, the paired parents should be different.
-  # 2. avoid offsprings share the exact same gene.
 }
 
 breed <- function(candidate, c, P, parent.pairs, mu, crossover_points, fitness_values, Gap){
@@ -181,16 +177,8 @@ breed <- function(candidate, c, P, parent.pairs, mu, crossover_points, fitness_v
   #' @return offspring (data frame) Offspring data frame after mutation
   # mutation
   mutation <- function(offspring, mu){
-    for (i in 1: nrow(offspring)){
-      chromosome <-  offspring[i, ]
-      #generate associated uniform random variable for each locus
-      mutationLocus <-  runif(length(chromosome),0,1)
-      #mutation occurs if r.v. < mutationProbability
-      #find the location of mutation
-      mutationOccur <- (mutationLocus < mu)
-      #return the final result
-      offspring[i, ] <- (mutationOccur + chromosome) %% 2
-    }
+    prob_mutation <- runif(length(offspring),0,1)
+    offspring[which(prob_mutation < mu)] <- abs(offspring[which(prob_mutation < mu)] - 1)
     return(offspring)
   }
 
@@ -199,13 +187,14 @@ breed <- function(candidate, c, P, parent.pairs, mu, crossover_points, fitness_v
   if (Gap == 1){
     return(offspring) #return
   }else{
-    num_replace= floor(P * Gap)
+
+    num_replace <- ceiling(P * Gap)
     # assume each time P/2 mother and P/2 father produce P babies
     # num_replace of parents will be replaced by random generated babies
 
     # index of the replaced parents
-    replaced_index= sort(fitness_values, decreasing = T,index.return= TRUE)$ix[1:num_replace]
-    selected_babies= sample(nrow(offspring), size= num_replace, replace = FALSE)
+    replaced_index <- sort(fitness_values, decreasing = T,index.return= TRUE)$ix[1:num_replace]
+    selected_babies <- sample(nrow(offspring), size= num_replace, replace = FALSE)
     candidate[replaced_index,] <- offspring[selected_babies,]
     return(candidate) #return
   }
