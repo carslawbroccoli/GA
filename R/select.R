@@ -176,7 +176,7 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
     if( iter >= max_iter){
       warning("Exceed the maximum number of iteration. The model may not give the optimal fitness function value. Try larger maximum of iteration.")
     }
-    return(list(count = iter, model = best_model, fitness_value = min_fitness[iter],plot = p))
+    return(list(count = iter, model = best_model, fitness_value = min_fitness[iter]))
   }
 }
 
