@@ -1,12 +1,9 @@
 # This file calls the functions from utils to fit a model using genetic algorithm
-#source("./code/utils.R")
-#library('ggplot2')
-source("~/GA/R/utils.R")
-source("~/GA/R/input_variables.R")
+source("./R/utils.R")
 
 select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, method_text = "lm", fitness_function_text = "AIC", mu = 0.1,
                    crossover_points = c-1, mechanism = "rank", random = TRUE, Gap = 1/4, plot.return = FALSE){
-  #' @importFrom stats as.formula runif
+  #' @import ggplot2
   #' @name select
   #' @title{select()}
   #' @export
@@ -30,19 +27,20 @@ select <- function(df, dependent_variable, P = ceiling(1.5*c), max_iter = 500, m
   #'  \item{get_model()}: {Returns the best fit model of the dataset}
   #' }
   #' @param df (data frame) Dataset to fit
-  #' @param P (int) The number of individuals per generation.
-  #' @param max_iter (int) The maximum number of iterations allowed when running GA
-  #' @param method_text lm() or glm() methods for fitting the data
-  #' @param fitness_function_text AIC, BIC, ow
-  #' @param mu: Mutation rate of the for each allele within the a given candidate chromosome.
-  #' @param crossover_points: (int) The number of crossover points during breeding step
-  #' @param mechanism: The mechanism to selection parents by.  Selection mechanisms
-  #' are "ranked" or "tournament."
+  #' @param dependent_variable (character) Column name of the dependent variable
+  #' @param P (numeric) The number of individuals per generation.
+  #' @param max_iter (numeric) The maximum number of iterations allowed when running GA
+  #' @param method_text (character) "lm" or "glm". methods for fitting the data
+  #' @param fitness_function_text (character) name of the fitness function. AIC, BIC, or user defined function.
+  #' @param mu (numeric) Mutation rate of the allele within a candidate chromosome.
+  #' @param crossover_points (numeric) The number of crossover points during breeding step
+  #' @param mechanism (character) The mechanism to select parents. Selection mechanisms are "rank" or "tournament".
   #' @param random (logical) Random replacement on or off for parent selection
-  #' @param Gap Generation gap that determines how parents (generation t) are replaced by offspring
-  #' of the (t+1) generation
+  #' @param Gap Generation gap that determines how parents (generation t) are replaced by offspring of the (t+1) generation
   #' @param plot.return (logical) Boolean for returning plot at end of the algorithm
   #' @examples
+  #' select(mtcars, "mpg")
+  #'
   #' fake_data <- function(c, n, beta_0, beta, sigma){
   #' # c: number of variables c = 10
   #' # n: total number of observations

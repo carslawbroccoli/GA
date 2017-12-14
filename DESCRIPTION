@@ -3,18 +3,17 @@ Type: Package
 Title: Genetic Algorithm for Variable Selection in Regression Problems
 Version: 0.1.0
 Authors@R: c(
-    person("Titouan", "Jehl",, "titouan.jehl@berkeley.edu", role = "aut"),
-    person("Junyuan", "Gao",, "junyuangao@berkeley.edu", role = "aut"),
-    person("Jeffrey", "Kwarsick",, "kwarsick@berkeley.edu", role = c("aut", "cre")),
-    person("Ming", "Qiu",, "mingq@berkeley.edu", role = "aut")
+    person("Junyuan", "Gao", email = "junyuangao@berkeley.edu", role = "aut"),
+    person("Titouan", "Jehl", email = "titouan.jehl@berkeley.edu", role = "aut"),
+    person("Jeffrey", "Kwarsick", email = "kwarsick@berkeley.edu", role = c("aut", "cre")),
+    person("Ming", "Qiu", email = "mingq@berkeley.edu", role = "aut")
     )
-Author: Ming Qiu, Junyuan Gao, Jehl Titouan, Jeffrey Kwarsick
+Author: Junyuan Gao, Titouan Jehl, Jeffrey Kwarsick, Ming Qiu
 Maintainer: Jeffrey Kwarsick <kwarsick@berkeley.edu>
-Description: A genetic algorithm for variable selection in regression problems, 
-    including both linear regression and GLM.  Used for handling binary functions
-    to fit data and produce the best model based on input data.  This package was 
-    assembled as part of the final project of STAT243 at the University of California,
-    Berkeley, Fall 2017.
+Description: 
+    A genetic algorithm for variable selection in regression problems, including both linear regression and GLM. Used for handling binary functions to fit data and produce the best model based on input data.  This package was assembled as part of the final project of STAT243 at the University of California, Berkeley, Fall 2017.
+Imports: 
+    ggplot2
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
