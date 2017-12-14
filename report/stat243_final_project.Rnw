@@ -1,0 +1,178 @@
+\documentclass{article}
+\usepackage[letterpaper, portrait, margin=1in]{geometry}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+\usepackage{courier}
+\usepackage{amsmath,amsthm,amssymb,amsbsy,comment,textcomp}
+\usepackage{float}
+\usepackage{graphicx,color,listings}
+
+\DeclareMathOperator*{\E}{\mathbb{E}}
+\DeclareMathOperator*{\ff}{\Box}
+\DeclareMathOperator*{\F}{\mathcal{F}}
+\DeclareMathOperator*{\Prb}{\mathbb{P}}
+\DeclareMathOperator*{\RN}{\mathbb{R}}
+\DeclareMathOperator*{\Ep}{\mathbb{E}_{\mathbb{P}}}
+\DeclareMathOperator*{\Nm}{\mathcal{N}}
+\DeclareMathOperator*{\eqp}{\buildrel \mathcal{P} \over =}
+\DeclareMathOperator*{\eqd}{\buildrel d \over =}
+\DeclareMathOperator*{\cvd}{\buildrel \mathcal{L} \over \rightarrow}
+\DeclareMathOperator*{\cvp}{\buildrel \mathbb{P} \over \rightarrow}
+\newcommand{\toas}{\xrightarrow{\text{a.s.}}}
+\newcommand{\gbox}{\colorbox{Gray!30}}
+\newcommand{\Var}{\text{Var}}
+
+\begin{document}
+
+\title{STAT 243 Final Project}
+\author{Ming Qiu, Junyuan Gao, Jeffrey Kwarsick, Titouan Jehl}
+\date{December 14, 2017}
+\maketitle
+
+\section{Final Project Location}
+Our Genetic Algorithm (GA) Package is located on Ming Qiu's github. The account name is
+\textbf{carslawbroccoli}. To install the package, run
+<<eval = F>>=
+install_github("carslawbroccoli/GA")
+@
+
+\section{Skeleton of the Genetic Algorithm}
+The genetic algorithm is designed according to the following flow chart.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale = 0.4]{algo}
+\end{center}
+\end{figure}
+
+To implement the genetic algorithm, we chose to break the algorithm into independent blocks so
+each of us could work separately. To realize those standalone blocks, we first consider two parts
+that are separable: the initialization and the loop. Initialization should create the first generation. On the other hand the loop can still be broken into subblocks. We decided to implement 5 methods:
+
+\begin{itemize}
+  \item A \textbf{\texttt{training}} method:
+  \begin{itemize}
+  \item Input: 
+  \begin{itemize}
+  \item Candidate: a matrix with each row the sequence of chromosome of candidates, which is a binary vector;
+  \item Data: the data set;
+  \item Method: \textbf{\texttt{lm()}} or \textbf{\texttt{glm()}};
+  \item Fitness function: \textbf{\texttt{AIC, BIC}} or user defined functions.
+  \end{itemize}
+\end{itemize}
+  The \textbf{\texttt{training}} method returns the fitness values of the candidate chromosomes. This method can deal with all the candidates for one generation at a time.
+
+  \item A \textbf{\texttt{select\_parents}} method:
+  \begin{itemize}
+  \item Input: 
+  \begin{itemize}
+  \item fitness\_values: avector of fitness values of the candidate of the current generation
+  \item mechanism: a parent selection mechanism(select both parents by rank/select one parent by rank and the other by random/tournament selection)
+  \item P: size of generation
+  \item c: length of chromosome
+  \end{itemize}
+    \end{itemize}
+ This function takes input values and returns $\frac{P}{2}$ parent pairs for the next step.
+
+  \item A \textbf{\texttt{breed}} method:
+  \begin{itemize}
+  \item Input: 
+  \begin{itemize}
+  \item Selected\_parent: a matrix with each row the indices of chromosome of one pair of parents.
+  \item Mutation\_rate: the rate of mutation.
+  \item Crossover\_points: the number of crossover points.
+  \item Gap: the proportion of parents replaced by offspring in the next generation.
+  \end{itemize}
+\end{itemize}
+  The \textbf{\texttt{breed}} method returns the chromosome sequences of the next generation.
+
+ \item A \textbf{\texttt{get\_model()}} method:
+  \begin{itemize}
+  \item Input: 
+  \begin{itemize}
+  \item candidate:the sequence of chromosome of a candidate, which is a binary vector;
+  \item fitness values: a vector of fitness values of the candidate of the current generation;
+  \item Method: textbf{\texttt{lm()}} or \textbf{\texttt{glm()}};
+  \item data: the data set;
+  \item Fitness function: \textbf{\texttt{AIC, BIC}} or user defined functions.
+  \end{itemize}
+  \end{itemize}
+  This function takes inputs and returns the model with smallest fitness value.
+\end{itemize}
+
+\subsection{Algorithm}
+
+\begin{algorithm}[H]
+	\caption{Genetic Algorithm}\label{alg:ga}
+	\begin{algorithmic}[1]
+		\Procedure{\textbf{\texttt{GA}}}{\textbf{\texttt{P}, \texttt{df}, \texttt{Y}, \texttt{mechanism}, \texttt{crossover\_points}, \texttt{mutation\_rate}, \texttt{Gap}}}
+		\State  \textbf{\texttt{init(P, df)}: Generate initial generation $P_0$.}
+		\State  \texttt{iter = 0}. \Comment{\texttt{iter}: number of generations.}
+		\State  \texttt{N = 0} \Comment{\texttt{N}: number of consecutive generations sharing the same minimum fitness values.}
+		\While{\texttt{iter $<$ max\_iter} or \texttt{N $<$ 200} }\\
+		\Comment{Terminate after \texttt{max\_iter} or minimum fitness values unchanged for 200 generations.}
+		  \State \textbf{\texttt{training($P_{iter}$, df)}:} Evaluate the fitness values of \texttt{$P_{iter}$}.
+		  \State \textbf{\texttt{select\_parents(mechanism):}} Select the parents according to mechanism.
+		  \State \textbf{\texttt{breed(crossover\_points, mutation\_rate, Gap)}:} Generate the next generation with crossover, mutation. Replace parents by the offspring according to Gap.
+		  \State \texttt{iter = iter + 1}.
+		\EndWhile\label{cholfor1}
+		\State \textbf{\texttt{get\_model($P_{iter}$, df)}}: Evaluate the fitness value and model for the selected one.
+		\State \textbf{return} A list with \textbf{\texttt{iter}, model, fitness\_value}.
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+
+Each of these methods are completely stand alone and can be tested without the rest of the method.
+However, provided the right comments to standardize the input and the output so assembling the
+blocks doesn’t raise errors, this skeleton enables the team to separately implement the algorithm
+efficiently.
+
+\section{Collaborator Contributions}
+
+\subsection{Ming Qiu's Contribution}
+Ming Qiu worked on the select.R function that handles the iterations for the genetic algorithm as well as the init, training, get\_model functions. She also worked to implement plotting features for our algorithm and improving the code from other parts. Lastly, she worked to debug the package as a whole to run more efficiently and help prepare the help manual.
+
+\subsection{Junyuan Gao's Contribution}
+Junyuan Gao worked on the formal testing for the completed algorithm, checking to ensure thatproper inputs for each function in our algorithm were able to handle improper inputs. He also worked on writing the breeding function (crossover and mutation included within the breeding function).
+
+\subsection{Jeffrey Kwarsick's Contribution}
+Jeffrey Kwarsick worked on the \emph{select\_parents()} function. He was also responsible for building the package and making sure it carried the proper structure.  He ensured that it was able to be installed through github and tested.  Lastly, he prepared all of the documentation within the package itself.
+
+\subsection{Titouan Jehl's Contribution}
+Titouan designed the skeleton. He coded the skeleton of the ‘utils.R‘ file so the whole group could be on the same page about the data type of the inputs and outputs. To do so I adopted the Google style of comment for each method.
+
+\section{Testing}
+We conducted testing on all of the inputs for all functions in our package and confirmed that if an invalid input was entered, that the code would properly handle the error and not execute. In addition to testing all of the outputs, all the functions were also tested independently. Below is an itemized list of how each function within our algorithm was tested.
+\subsection{Unit Tests}
+\begin{itemize}
+
+\item \textbf{\texttt{init()}}: For this function, since the input will be evaluated in the further integration test, we only test the type of output and the random initialization(i.e. Repeated initialization does not return the same chromosomes). 
+
+\item \textbf{\texttt{training()}}: For this function, we create an input test to check whether inputs are in correct type, an output test to check whether outputs are in correct type and two functional tests to check whether each option of regression methods(i.e. \texttt{lm()} or \texttt{glm()} ) and fitness functions(e.g. AIC, BIC) can work.
+
+\item \textbf{\texttt{select\_parents()}}: For this function, we make an input test to check whether inputs are in correct type and several tests that checked correctness and consistency(i.e. our algorithm will always produce correct number of parent pairs at any time) of the number of parent pairs. Moreover, a test that checks the whether selecting process is random is also included.
+
+\item \textbf{\texttt{breed()}}: For this function, we firstly make an input test to check whether inputs are in correct type and an output test to check whether outputs are in correct type. In addition, several functional tests are made to check whether crossover and mutation will produce exactly different new generations and make sure that the algorithm only works when the generation gap rate $\in (0,1]$.
+
+\item \textbf{\texttt{get\_model()}}: Since this function is very similar to \texttt{training()}, we just make a output test to check whether the output is a \texttt{lm} or \texttt{glm} object.
+
+\end{itemize}
+
+\subsection{Integration Test}
+In this section, we evaluate the main function \texttt{select()} in several ways: 
+\begin{enumerate}
+\item Create an input test to check whether inputs are missing and in correct type. 
+\item Create an output test to check whether outputs are in correct type. 
+\item A stopping condition check whether the \texttt{max\_iter} and convergence condition(i.e. we think the algorithm converge until number of consecutive generations sharing the same minimum evaluating values $\geq$ 200) are useful. 
+\item We test the consistency of convergence(i.e. algorithm converge to same result regardless of the selection of mechanism) 
+\item Lastly, we verify the efficiency difference when using different parent selection mechanism.
+\end{enumerate}
+
+\section{Example}
+Below is an example for fitting using an R dataset "mtcars", with the dependent variable being "mpg."
+
+<< fig.height=4,fig.width=4>>=
+library('GA')
+mtcars_model <- select(mtcars, "mpg", plot.return = TRUE)
+@
+\end{document}
